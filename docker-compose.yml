@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    build: .
+    container_name: VolcaAPIDB
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: VolcAPIDB
+    ports:
+      - "5432:5432"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
