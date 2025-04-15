@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts",
+    "dev": "docker compose up -d && nodemon src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "scrapeBulletins": "ts-node src/scripts/scrapeBulletins.ts",

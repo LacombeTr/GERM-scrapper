@@ -1,4 +1,5 @@
 import {boolean, integer, text, varchar} from "drizzle-orm/pg-core/index";
+import {episodes, eruptions, events, volcanoes} from "./db/schema";
 
 /**
  * Type for gps coordinates
@@ -69,7 +70,7 @@ export interface Volcano {
     volcanoType: string,
     country: string | null,
     lastEruption: number | null;
-    smithsonianid: number,
+    smithsonianid: number | null,
     altitude: number | null,
     coordinates: Coordinates,
 }
@@ -90,6 +91,28 @@ export interface VolcanoQuery {
     name: string,
     countryid: number | null,
     type: string,
+    lasteruption: number | null,
+    altitude: number | null,
+    latitude: string | null, // numeric est consideré comme une string
+    longitude: string | null,  // numeric est consideré comme une string
+    smithsonianid: number | null,
+}
+
+/**
+ * Type for a volcano
+ * @property {string} name - Volcano name
+ * @property {string | null} country - Country where the volcano is located
+ * @property {string} type - Volcano type
+ * @property {number | null} lastEruption - Volcano last known eruption year
+ * @property {number} altitude - Volcano elevation
+ * @property {string | null} latitude - latitude of the volcano
+ * @property {string | null} longitude - longitude of the volcano
+ * @property {number | null} smithsonianid - id of the volcano in the smithsonian database
+ */
+export interface VolcanoResponse {
+    name: string,
+    country: string | null,
+    volcanoType: string,
     lasteruption: number | null,
     altitude: number | null,
     latitude: string | null, // numeric est consideré comme une string
