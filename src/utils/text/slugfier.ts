@@ -1,7 +1,11 @@
 import {normalizeString} from "./normalizeString";
 
 const slugify = (str: string) => {
-    return normalizeString(str).replace(' ', '-')
+    return str.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/\s/g, '-')
+        .replace('.', '');
 }
 
 export default slugify

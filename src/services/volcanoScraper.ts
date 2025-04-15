@@ -3,6 +3,7 @@ import 'dotenv/config';
 import {scrapePage} from "../utils/scrapePage";
 import {VolcanoParser} from "../utils/volcanoParser";
 import {createProgressBar} from "../utils/logs/progressBar";
+import slugify from "../utils/text/slugfier";
 
 export class VolcanoScraper {
 
@@ -45,7 +46,8 @@ export class VolcanoScraper {
                 coordinates: coordinates,
                 altitude: altitude,
                 lastEruption: lastEruption,
-                smithsonianid: smithsonianid
+                smithsonianid: smithsonianid,
+                slug: slugify(volcanoName),
             }
             volcanoesInfoList.push(volcanoInfos);
 

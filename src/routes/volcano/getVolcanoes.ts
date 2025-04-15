@@ -1,10 +1,10 @@
-import {Volcano, VolcanoResponse} from "../types";
+import {Volcano, VolcanoResponse} from "../../types";
 import 'dotenv/config';
-import {countries, volcanoes} from "../db/schema";
+import {countries, volcanoes} from "../../db/schema";
 import {eq} from "drizzle-orm";
 import {Request, Response} from "express";
-import {dbConnect} from "../utils/dbConnect";
-import slugify from "../utils/text/slugfier";
+import {dbConnect} from "../../utils/dbConnect";
+import slugify from "../../utils/text/slugfier";
 
 export class VolcanoesHandler {
 
@@ -23,7 +23,8 @@ export class VolcanoesHandler {
                         smithsonianid: volcanoes.smithsonianid,
                         altitude: volcanoes.altitude,
                         latitude: volcanoes.latitude,
-                        longitude: volcanoes.longitude
+                        longitude: volcanoes.longitude,
+                        slug: volcanoes.slug,
                     })
                     .from(volcanoes)
                     .innerJoin(countries, eq(volcanoes.countryid, countries.id))
@@ -39,7 +40,8 @@ export class VolcanoesHandler {
                     lastEruption: entry.lasteruption,
                     smithsonianid: entry.smithsonianid,
                     altitude: entry.altitude,
-                    coordinates: [Number(entry.latitude), Number(entry.longitude)]
+                    coordinates: [Number(entry.latitude), Number(entry.longitude)],
+                    slug: slugify(entry.slug),
                 })
             })
 
@@ -64,7 +66,8 @@ export class VolcanoesHandler {
                 smithsonianid: volcanoes.smithsonianid,
                 altitude: volcanoes.altitude,
                 latitude: volcanoes.latitude,
-                longitude: volcanoes.longitude
+                longitude: volcanoes.longitude,
+                slug: volcanoes.slug
             })
                 .from(volcanoes)
                 .where(eq(volcanoes.id, id))
@@ -87,7 +90,8 @@ export class VolcanoesHandler {
                     lastEruption: volcanoesDbResponse[0].lasteruption,
                     smithsonianid: volcanoesDbResponse[0].smithsonianid,
                     altitude: volcanoesDbResponse[0].altitude,
-                    coordinates: [Number(volcanoesDbResponse[0].latitude), Number(volcanoesDbResponse[0].longitude)]
+                    coordinates: [Number(volcanoesDbResponse[0].latitude), Number(volcanoesDbResponse[0].longitude)],
+                    slug: volcanoesDbResponse[0].slug,
                 }
 
             response.status(200).json(volcano);
@@ -112,10 +116,11 @@ export class VolcanoesHandler {
                 smithsonianid: volcanoes.smithsonianid,
                 altitude: volcanoes.altitude,
                 latitude: volcanoes.latitude,
-                longitude: volcanoes.longitude
+                longitude: volcanoes.longitude,
+                slug: volcanoes.slug
             })
                 .from(volcanoes)
-                .where(eq(volcanoes.name, slugify(name)))
+                .where(eq(volcanoes.slug, slugify(name)))
                 .innerJoin(countries, eq(volcanoes.countryid, countries.id))
                 .execute() as unknown as VolcanoResponse[];
 
@@ -135,7 +140,8 @@ export class VolcanoesHandler {
                     lastEruption: volcanoesDbResponse[0].lasteruption,
                     smithsonianid: volcanoesDbResponse[0].smithsonianid,
                     altitude: volcanoesDbResponse[0].altitude,
-                    coordinates: [Number(volcanoesDbResponse[0].latitude), Number(volcanoesDbResponse[0].longitude)]
+                    coordinates: [Number(volcanoesDbResponse[0].latitude), Number(volcanoesDbResponse[0].longitude)],
+                    slug: volcanoesDbResponse[0].slug,
                 }
 
             response.status(200).json(volcano);

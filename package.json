@@ -12,7 +12,8 @@
     "scrapeBulletins": "ts-node src/scripts/scrapeBulletins.ts",
     "scrapeVolcanoes": "ts-node src/scripts/scrapeVolcanoes.ts",
     "scrapeEruptions": "ts-node src/scripts/scrapeEruptions.ts",
-    "seedingDB": "ts-node src/scripts/scrapeVolcanoes.ts && ts-node src/scripts/scrapeBulletins.ts"
+    "seedingDB": "ts-node src/scripts/scrapeVolcanoes.ts && ts-node src/scripts/scrapeBulletins.ts",
+    "slugifyDB": "ts-node src/scripts/dbSlugifier.ts"
   },
   "keywords": [],
   "author": "",

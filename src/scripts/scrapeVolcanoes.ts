@@ -6,6 +6,7 @@ import {countryIDs} from "../utils/countries";
 import {volcanoes} from "../db/schema";
 import {createProgressBar} from "../utils/logs/progressBar";
 import {convertToUtf8} from "../utils/text/convertToUTF8";
+import slugify from "../utils/text/slugfier";
 
 
 async function scrapeVolcanoes(entryNumber?: number, offset?: number) {
@@ -36,11 +37,12 @@ async function scrapeVolcanoes(entryNumber?: number, offset?: number) {
                 longitude: entry.coordinates[1] ? entry.coordinates[1].toString() : null,
                 lasteruption: entry.lastEruption ? entry.lastEruption : null,
                 smithsonianid: entry.smithsonianid ? entry.smithsonianid : null,
+                slug: entry.slug,
             }
 
             await db.insert(volcanoes).values(volcano);
 
-            const advancement = ((i+1)/volcanoList.length)*100
+            const advancement = ((i + 1) / volcanoList.length) * 100
             createProgressBar(advancement)
         }
 

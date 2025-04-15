@@ -73,6 +73,7 @@ export interface Volcano {
     smithsonianid: number | null,
     altitude: number | null,
     coordinates: Coordinates,
+    slug: string
 }
 
 /**
@@ -96,6 +97,7 @@ export interface VolcanoQuery {
     latitude: string | null, // numeric est consideré comme une string
     longitude: string | null,  // numeric est consideré comme une string
     smithsonianid: number | null,
+    slug: string
 }
 
 /**
@@ -118,6 +120,7 @@ export interface VolcanoResponse {
     latitude: string | null, // numeric est consideré comme une string
     longitude: string | null,  // numeric est consideré comme une string
     smithsonianid: number | null,
+    slug: string
 }
 
 export interface Eruption {

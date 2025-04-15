@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { volcanoes, eruptions, episodes, events, continents, countries, bulletins } from "./schema";
+import { volcanoes, eruptions, continents, countries, episodes, events, bulletins } from "./schema";
 
 export const eruptionsRelations = relations(eruptions, ({one, many}) => ({
 	volcano: one(volcanoes, {
@@ -18,6 +18,19 @@ export const volcanoesRelations = relations(volcanoes, ({one, many}) => ({
 	bulletins: many(bulletins),
 }));
 
+export const countriesRelations = relations(countries, ({one, many}) => ({
+	continent: one(continents, {
+		fields: [countries.continentid],
+		references: [continents.id]
+	}),
+	volcanoes: many(volcanoes),
+	bulletins: many(bulletins),
+}));
+
+export const continentsRelations = relations(continents, ({many}) => ({
+	countries: many(countries),
+}));
+
 export const episodesRelations = relations(episodes, ({one, many}) => ({
 	eruption: one(eruptions, {
 		fields: [episodes.eruptionid],
@@ -31,19 +44,6 @@ export const eventsRelations = relations(events, ({one}) => ({
 		fields: [events.episodeid],
 		references: [episodes.id]
 	}),
-}));
-
-export const countriesRelations = relations(countries, ({one, many}) => ({
-	continent: one(continents, {
-		fields: [countries.continentid],
-		references: [continents.id]
-	}),
-	volcanoes: many(volcanoes),
-	bulletins: many(bulletins),
-}));
-
-export const continentsRelations = relations(continents, ({many}) => ({
-	countries: many(countries),
 }));
 
 export const bulletinsRelations = relations(bulletins, ({one}) => ({
