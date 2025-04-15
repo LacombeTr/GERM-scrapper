@@ -17,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/volcanoes", VolcanoesHandler.getAllVolcanoes);
+app.get("/volcanoes/getVolcanoList", VolcanoesHandler.getVolcanoList);
 app.get('/volcanoes/getVolcanoByID/:id', VolcanoesHandler.getVolcanoById)
 app.get('/volcanoes/getVolcanoByName/:name', VolcanoesHandler.getVolcanoByName)
 

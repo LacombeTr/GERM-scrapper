@@ -52,6 +52,25 @@ export class VolcanoesHandler {
         }
     }
 
+    public static async getVolcanoList(request: Request, response: Response) {
+
+        const db = dbConnect();
+
+        try {
+            const volcanoesDbResponse = await
+                db.select(
+                    {
+                        name: volcanoes.name,
+                    })
+                    .from(volcanoes)
+
+            response.status(200).json(volcanoesDbResponse);
+        } catch (error) {
+            console.error("Error fetching volcanoes:", error);
+            response.status(500).json({error: "Internal server error"});
+        }
+    }
+
     public static async getVolcanoById(request: Request, response: Response) {
         const id = parseInt(request.params.id)
 
