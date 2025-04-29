@@ -1,18 +1,23 @@
-import { pgTable, foreignKey, integer, text, boolean, serial, varchar, index, numeric, date } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, foreignKey, integer, text, boolean, index, numeric, date } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 
+
+export const continents = pgTable("continents", {
+	id: serial().primaryKey().notNull(),
+	continent: varchar({ length: 32 }),
+});
 
 export const eruptions = pgTable("eruptions", {
 	id: integer().primaryKey().generatedAlwaysAsIdentity({ name: "eruptions_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
 	volcanoid: integer().notNull(),
 	startdate: text(),
 	enddate: text(),
-	uncertaintystartdate: text(),
-	uncertaintyenddate: text(),
 	confirmed: boolean().notNull(),
 	type: text(),
 	vei: integer(),
+	uncertaintystartdate: text(),
+	uncertaintyenddate: text(),
 }, (table) => [
 	foreignKey({
 			columns: [table.volcanoid],
@@ -21,10 +26,18 @@ export const eruptions = pgTable("eruptions", {
 		}),
 ]);
 
-export const continents = pgTable("continents", {
+export const countries = pgTable("countries", {
 	id: serial().primaryKey().notNull(),
-	continent: varchar({ length: 32 }),
-});
+	country: varchar({ length: 64 }),
+	continentid: integer(),
+}, (table) => [
+	index("idx_countries_continentid").using("btree", table.continentid.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.continentid],
+			foreignColumns: [continents.id],
+			name: "countries_continentid_fkey"
+		}).onDelete("set null"),
+]);
 
 export const episodes = pgTable("episodes", {
 	id: integer().primaryKey().generatedAlwaysAsIdentity({ name: "episode_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
@@ -57,19 +70,6 @@ export const events = pgTable("events", {
 		}),
 ]);
 
-export const countries = pgTable("countries", {
-	id: serial().primaryKey().notNull(),
-	country: varchar({ length: 64 }),
-	continentid: integer(),
-}, (table) => [
-	index("idx_countries_continentid").using("btree", table.continentid.asc().nullsLast().op("int4_ops")),
-	foreignKey({
-			columns: [table.continentid],
-			foreignColumns: [continents.id],
-			name: "countries_continentid_fkey"
-		}).onDelete("set null"),
-]);
-
 export const volcanoes = pgTable("volcanoes", {
 	id: serial().primaryKey().notNull(),
 	name: varchar({ length: 255 }),
@@ -80,6 +80,7 @@ export const volcanoes = pgTable("volcanoes", {
 	type: varchar({ length: 64 }),
 	lasteruption: integer(),
 	smithsonianid: integer(),
+	slug: text().notNull(),
 }, (table) => [
 	index("idx_volcanoes_countryid").using("btree", table.countryid.asc().nullsLast().op("int4_ops")),
 	foreignKey({

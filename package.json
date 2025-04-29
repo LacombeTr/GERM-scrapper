@@ -6,13 +6,14 @@
   "scripts": {
     "test": "jest",
     "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts",
+    "dev": "docker compose up -d && nodemon src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "scrapeBulletins": "ts-node src/scripts/scrapeBulletins.ts",
     "scrapeVolcanoes": "ts-node src/scripts/scrapeVolcanoes.ts",
     "scrapeEruptions": "ts-node src/scripts/scrapeEruptions.ts",
-    "seedingDB": "ts-node src/scripts/scrapeVolcanoes.ts && ts-node src/scripts/scrapeBulletins.ts"
+    "seedingDB": "ts-node src/scripts/scrapeVolcanoes.ts && ts-node src/scripts/scrapeBulletins.ts",
+    "slugifyDB": "ts-node src/scripts/dbSlugifier.ts"
   },
   "keywords": [],
   "author": "",
