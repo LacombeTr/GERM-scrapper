@@ -144,6 +144,30 @@ export interface Episode {
     events: EruptiveEvent[] | null
 }
 
+export interface EruptionDBResponse {
+    eruptionId: number
+    volcano: string | null,
+    startDate: string | null,
+    endDate: string | null,
+    uncertaintyStartDate: string | null,
+    uncertaintyEndDate: string | null,
+    confirmed: boolean,
+    type: string | null,
+    vei: number | null
+    // Episode________
+    episodeId: number | null,
+    episodeStartDate: string | null,
+    episodeEndDate: string | null,
+    location: string | null,
+    sourceConf: string | null,
+    typeEpisode: string | null,
+    // Event__________
+    eventStartDate: string | null,
+    eventEndDate: string | null,
+    eventType: string | null,
+    remarks: string | null,
+}
+
 export interface EruptiveEvent {
     startdate: string | null,
     enddate: string | null,

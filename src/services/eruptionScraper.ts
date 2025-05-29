@@ -79,7 +79,6 @@ export class EruptionScraper {
                     }
                 }
             }
-            console.log("\n")
             const advancement = ((index + 1) / volcanoIDList.length) * 100
             createProgressBar(advancement)
 
