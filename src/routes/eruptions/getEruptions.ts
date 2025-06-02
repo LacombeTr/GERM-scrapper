@@ -3,6 +3,8 @@ import {dbConnect} from "../../utils/dbConnect";
 import {episodes, eruptions, events, volcanoes} from "../../db/schema";
 import {eq} from "drizzle-orm";
 import slugify from "../../utils/text/slugfier";
+import {EruptionDBResponse} from "../../types";
+import groupEvents from "../../utils/groupEvents";
 
 export class GetEruptions {
 
@@ -11,10 +13,11 @@ export class GetEruptions {
         const db = dbConnect()
 
         try {
-            const eruptionsDBresponse = await
+            const eruptionsDBresponse: Array<EruptionDBResponse> = await
                 db.select(
                     {
                         // Eruption_______
+                        eruptionId: eruptions.id,
                         volcano: volcanoes.name,
                         startDate: eruptions.startdate,
                         endDate: eruptions.enddate,
@@ -24,6 +27,7 @@ export class GetEruptions {
                         type: eruptions.type,
                         vei: eruptions.vei,
                         // Episode________
+                        episodeId: episodes.id,
                         episodeStartDate: episodes.startdate,
                         episodeEndDate: episodes.enddate,
                         location: episodes.location,
@@ -41,7 +45,9 @@ export class GetEruptions {
                     .leftJoin(episodes, eq(eruptions.id, episodes.eruptionid))
                     .leftJoin(events, eq(episodes.id, events.episodeid));
 
-            response.status(200).json(eruptionsDBresponse);
+            const finalEruptions = groupEvents(eruptionsDBresponse);
+
+            response.status(200).json(finalEruptions);
 
         } catch (error) {
             // console.error("Error fetching eruptions:", error);
@@ -55,10 +61,11 @@ export class GetEruptions {
         const id = parseInt(request.params.id)
 
         try {
-            const eruptionsDBresponse = await
+            const eruptionsDBresponse: Array<EruptionDBResponse> = await
                 db.select(
                     {
                         // Eruption_______
+                        eruptionId: eruptions.id,
                         volcano: volcanoes.name,
                         startDate: eruptions.startdate,
                         endDate: eruptions.enddate,
@@ -68,6 +75,7 @@ export class GetEruptions {
                         type: eruptions.type,
                         vei: eruptions.vei,
                         // Episode________
+                        episodeId: episodes.id,
                         episodeStartDate: episodes.startdate,
                         episodeEndDate: episodes.enddate,
                         location: episodes.location,
@@ -87,9 +95,9 @@ export class GetEruptions {
                     .leftJoin(events, eq(episodes.id, events.episodeid))
                     .execute();
 
-            // const summedEvents = eruptionsDBresponse.reduce((acc, event) => )
+            const finalEruptions = groupEvents(eruptionsDBresponse);
 
-            response.status(200).json(eruptionsDBresponse);
+            response.status(200).json(finalEruptions);
 
         } catch (error) {
             console.error("Error fetching volcanoes:", error);
@@ -103,12 +111,12 @@ export class GetEruptions {
         const name = request.params.name
 
         try {
-            const eruptionsDBresponse = await
+            const eruptionsDBresponse: Array<EruptionDBResponse> = await
                 db.select(
                     {
                         // Eruption_______
-                        volcanoName: volcanoes.name,
-                        volcanoSlug: volcanoes.slug,
+                        eruptionId: eruptions.id,
+                        volcano: volcanoes.name,
                         startDate: eruptions.startdate,
                         endDate: eruptions.enddate,
                         uncertaintyStartDate: eruptions.uncertaintystartdate,
@@ -117,6 +125,7 @@ export class GetEruptions {
                         type: eruptions.type,
                         vei: eruptions.vei,
                         // Episode________
+                        episodeId: episodes.id,
                         episodeStartDate: episodes.startdate,
                         episodeEndDate: episodes.enddate,
                         location: episodes.location,
@@ -136,9 +145,10 @@ export class GetEruptions {
                     .where(eq(volcanoes.slug, slugify(name)))
                     .execute();
 
-            // const summedEvents = eruptionsDBresponse.reduce((acc, event) => )
 
-            response.status(200).json(eruptionsDBresponse);
+            const finalEruptions = groupEvents(eruptionsDBresponse);
+
+            response.status(200).json(finalEruptions);
 
         } catch (error) {
             console.error("Error fetching volcanoes:", error);
