@@ -1,204 +1,109 @@
-import {boolean, integer, text, varchar} from "drizzle-orm/pg-core/index";
-import {episodes, eruptions, events, volcanoes} from "./db/schema";
+import { elementValues } from "./db/schema";
 
 /**
- * Type for gps coordinates
- * @property {[number, number]} coordinates -  [latitude, longitude]
+ * Periodic table elements enum - atomic number to element symbol mapping
  */
-export type Coordinates = [number, number] | [null, null]
-
-/**
- * Type for a bulletin
- * @property {string} volcano - volcano name
- * @property {string} country - country where the volcano is located
- * @property {Date} watchStart - start date of the watching period
- * @property {Date} watchEnd - start date of the watching period
- * @property {string} description - body of the bulletin
- * @property {string} source - source of the bulletin
- * @property {Date} pubDate - publication date of bulletin
- * @property {Coordinates} coordinates - Coordinate of the activity reported in bulletin
- */
-export interface Bulletin {
-    volcano: string,
-    country: string,
-    status: string,
-    watchStart: Date,
-    watchEnd: Date,
-    description: string,
-    source?: string,
-    pubDate: Date,
-    coordinates: Coordinates,
-}
-
-/**
- * Type for a bulletin query for the database
- * @property {string} volcano - volcano name
- * @property {string} country - country where the volcano is located
- * @property {string | null} watchstart - start date of the watching period
- * @property {string | null} watchend - start date of the watching period
- * @property {string} description - body of the bulletin
- * @property {string | null} source - source of the bulletin
- * @property {string | null} pubDate - publication date of bulletin
- * @property {string | null} latitude - latitude of the activity reported in bulletin
- * @property {string | null} longitude - longitude of the activity reported in bulletin
- */
-export interface BulletinQuery {
-    volcanoid: number,
-    countryid: number,
-    status: string,
-    watchstart?: string | null,
-    watchend?: string | null,
-    description: string,
-    source?: string | null,
-    pubdate: string | null,
-    latitude?: string | null,
-    longitude?: string | null,
-}
-
-/**
- * Type for a volcano
- * @property {string} name - Volcano name
- * @property {string} volcanoType - Volcano type
- * @property {string} country - Country where the volcano is located
- * @property {number | null} lastEruption - Volcano last known eruption year
- * @property {Eruption | null} eruptions - List of volcano known eruptions
- * @property {number} altitude - Volcano elevation
- * @property {Coordinates} coordinates - Coordinate of the activity reported in bulletin
- */
-export interface Volcano {
-    name: string,
-    volcanoType: string,
-    country: string | null,
-    lastEruption: number | null;
-    smithsonianid: number | null,
-    altitude: number | null,
-    coordinates: Coordinates,
-    slug: string
-}
-
-/**
- * Type for a volcano
- * @property {string} name - Volcano name
- * @property {string} volcanoType - Volcano type
- * @property {string} country - Country where the volcano is located
- * @property {number | null} lastEruption - Volcano last known eruption year
- * @property {Eruption | null} eruptions - List of volcano known eruptions
- * @property {number} altitude - Volcano elevation
- * @property {string | null} latitude - latitude of the volcano
- * @property {string | null} longitude - longitude of the volcano
- * @property {number | null} smithsonianid - id of the volcano in the smithsonian database
- */
-export interface VolcanoQuery {
-    name: string,
-    countryid: number | null,
-    type: string,
-    lasteruption: number | null,
-    altitude: number | null,
-    latitude: string | null, // numeric est consideré comme une string
-    longitude: string | null,  // numeric est consideré comme une string
-    smithsonianid: number | null,
-    slug: string
+export enum PeriodicElement {
+    H = 1, // Hydrogen
+    He = 2, // Helium
+    Li = 3, // Lithium
+    Be = 4, // Beryllium
+    B = 5, // Boron
+    C = 6, // Carbon
+    N = 7, // Nitrogen
+    O = 8, // Oxygen
+    F = 9, // Fluorine
+    Ne = 10, // Neon
+    Na = 11, // Sodium
+    Mg = 12, // Magnesium
+    Al = 13, // Aluminum
+    Si = 14, // Silicon
+    P = 15, // Phosphorus
+    S = 16, // Sulfur
+    Cl = 17, // Chlorine
+    Ar = 18, // Argon
+    K = 19, // Potassium
+    Ca = 20, // Calcium
+    Sc = 21, // Scandium
+    Ti = 22, // Titanium
+    V = 23, // Vanadium
+    Cr = 24, // Chromium
+    Mn = 25, // Manganese
+    Fe = 26, // Iron
+    Co = 27, // Cobalt
+    Ni = 28, // Nickel
+    Cu = 29, // Copper
+    Zn = 30, // Zinc
+    Ga = 31, // Gallium
+    Ge = 32, // Germanium
+    As = 33, // Arsenic
+    Se = 34, // Selenium
+    Br = 35, // Bromine
+    Kr = 36, // Krypton
+    Rb = 37, // Rubidium
+    Sr = 38, // Strontium
+    Y = 39, // Yttrium
+    Zr = 40, // Zirconium
+    Nb = 41, // Niobium
+    Mo = 42, // Molybdenum
+    Tc = 43, // Technetium
+    Ru = 44, // Ruthenium
+    Rh = 45, // Rhodium
+    Pd = 46, // Palladium
+    Ag = 47, // Silver
+    Cd = 48, // Cadmium
+    In = 49, // Indium
+    Sn = 50, // Tin
+    Sb = 51, // Antimony
+    Te = 52, // Tellurium
+    I = 53, // Iodine
+    Xe = 54, // Xenon
+    Cs = 55, // Cesium
+    Ba = 56, // Barium
+    La = 57, // Lanthanum
+    Ce = 58, // Cerium
+    Pr = 59, // Praseodymium
+    Nd = 60, // Neodymium
+    Pm = 61, // Promethium
+    Sm = 62, // Samarium
+    Eu = 63, // Europium
+    Gd = 64, // Gadolinium
+    Tb = 65, // Terbium
+    Dy = 66, // Dysprosium
+    Ho = 67, // Holmium
+    Er = 68, // Erbium
+    Tm = 69, // Thulium
+    Yb = 70, // Ytterbium
+    Lu = 71, // Lutetium
+    Hf = 72, // Hafnium
+    Ta = 73, // Tantalum
+    W = 74, // Tungsten
+    Re = 75, // Rhenium
+    Os = 76, // Osmium
+    Ir = 77, // Iridium
+    Pt = 78, // Platinum
+    Au = 79, // Gold
+    Hg = 80, // Mercury
+    Tl = 81, // Thallium
+    Pb = 82, // Lead
+    Bi = 83, // Bismuth
+    Po = 84, // Polonium
+    At = 85, // Astatine
+    Rn = 86, // Radon
+    Fr = 87, // Francium
+    Ra = 88, // Radium
+    Ac = 89, // Actinium
+    Th = 90, // Thorium
+    Pa = 91, // Protactinium
+    U = 92, // Uranium
 }
 
 /**
- * Type for a volcano
- * @property {string} name - Volcano name
- * @property {string | null} country - Country where the volcano is located
- * @property {string} type - Volcano type
- * @property {number | null} lastEruption - Volcano last known eruption year
- * @property {number} altitude - Volcano elevation
- * @property {string | null} latitude - latitude of the volcano
- * @property {string | null} longitude - longitude of the volcano
- * @property {number | null} smithsonianid - id of the volcano in the smithsonian database
+ * Type for element analysis values - inferred from database schema
  */
-export interface VolcanoResponse {
-    name: string,
-    country: string | null,
-    volcanoType: string,
-    lasteruption: number | null,
-    altitude: number | null,
-    latitude: string | null, // numeric est consideré comme une string
-    longitude: string | null,  // numeric est consideré comme une string
-    smithsonianid: number | null,
-    slug: string
-}
+export type ElementValueSelect = typeof elementValues.$inferSelect;
+export type ElementValueInsert = typeof elementValues.$inferInsert;
 
-export interface Eruption {
-    volcanoid: number | null,
-    startdate: string,
-    enddate: string | null,
-    uncertaintystartdate: string | null,
-    uncertaintyenddate: string | null,
-    confirmed: boolean,
-    type: string | null,
-    vei: number | null,
-    episodes: Episode[] | null,
-}
-
-export interface Episode {
-    startdate: string | null,
-    enddate: string | null,
-    location: string | null,
-    sourceofconf: string | null,
-    typeoferuption: string | null,
-    events: EruptiveEvent[] | null
-}
-
-export interface EruptionDBResponse {
-    eruptionId: number
-    volcano: string | null,
-    startDate: string | null,
-    endDate: string | null,
-    uncertaintyStartDate: string | null,
-    uncertaintyEndDate: string | null,
-    confirmed: boolean,
-    type: string | null,
-    vei: number | null
-    // Episode________
-    episodeId: number | null,
-    episodeStartDate: string | null,
-    episodeEndDate: string | null,
-    location: string | null,
-    sourceConf: string | null,
-    typeEpisode: string | null,
-    // Event__________
-    eventStartDate: string | null,
-    eventEndDate: string | null,
-    eventType: string | null,
-    remarks: string | null,
-}
-
-export interface EruptiveEvent {
-    startdate: string | null,
-    enddate: string | null,
-    eventtype: string,
-    remarks: string | null,
-}
-
-export interface EruptionQuery {
-    volcanoid: number,
-    startdate: string | null,
-    enddate: string | null,
-    uncertaintystartdate: string | null,
-    uncertaintyenddate: string | null,
-    confirmed: boolean,
-    type: string | null,
-    vei: number | null
-}
-
-export interface EpisodeQuery {
-    eruptionid: number,
-    startdate: string | null,
-    enddate: string | null,
-    location: string | null,
-    sourceofconf: string | null,
-    typeofepisode: string | null,
-}
-
-export interface EruptiveEventQuery {
-    episodeid: number,
-    startdate: string | null,
-    enddate: string | null,
-    eventtype: string | null,
-    remarks: string | null,
-}
+export type ElementValue = Omit<typeof elementValues.$inferSelect, "id"> & {
+    id?: number;
+};

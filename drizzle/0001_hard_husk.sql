@@ -1,0 +1,1 @@
+ALTER TABLE "element_values" ALTER COLUMN "element" SET DATA TYPE varchar(255);
