@@ -99,7 +99,7 @@ export enum PeriodicElement {
 }
 
 /**
- * Type for element analysis values from volcanic samples - inferred from database schema
+ * Type for element analysis values - inferred from database schema
  */
 export type ElementValueSelect = typeof elementValues.$inferSelect;
 export type ElementValueInsert = typeof elementValues.$inferInsert;
