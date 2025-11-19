@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { scrapePage } from "../utils/scrapePage";
-import { ElementValue } from "../types";
+import { ElementValue, PeriodicElement } from "../types";
 import { drizzle } from "drizzle-orm/node-postgres/driver";
 import { elementValues } from "../db/schema";
 
@@ -16,11 +16,15 @@ const db = drizzle(process.env.DATABASE_URL!);
 
 const scrapeElements = async () => {
     for (let atomicNumber = 1; atomicNumber <= 92; atomicNumber++) {
-        console.log(`Scraping element with atomic number: ${atomicNumber}`);
+        console.log(
+            `Scraping element with atomic number: ${PeriodicElement[atomicNumber]}(Z=(${atomicNumber})`
+        );
+        console.log(`Fetching page...`);
         let fetchedPage: Document | undefined;
 
         try {
             fetchedPage = await fetchedElementPage(atomicNumber);
+            console.log(`Page fetched`);
         } catch (error) {
             console.error("Error fetching the page:", error);
         }
@@ -30,6 +34,21 @@ const scrapeElements = async () => {
                 .querySelectorAll('tr[valign="top"]')
                 .forEach(async (row) => {
                     const cells = row.querySelectorAll("td");
+                    const sourceList: string[] = [];
+                    const sourceURLList: string[] = [];
+
+                    cells[12]?.querySelectorAll("a")
+                        ? cells[12]?.querySelectorAll("a").forEach((source) => {
+                              sourceList.push(source.textContent || "");
+                          })
+                        : null;
+
+                    cells[12]?.querySelectorAll("a")
+                        ? cells[12]?.querySelectorAll("a").forEach((source) => {
+                              sourceURLList.push(source.href);
+                          })
+                        : null;
+
                     const elementData: ElementValue = {
                         reservoir: cells[0]?.textContent?.trim() || "",
                         z: atomicNumber,
@@ -57,8 +76,13 @@ const scrapeElements = async () => {
                         reference: cells[11]?.textContent?.trim() || null,
                         referenceURL:
                             cells[11]?.querySelector("a")?.href || null,
-                        source: cells[12]?.textContent?.trim() || null,
-                        sourceURL: cells[12]?.querySelector("a")?.href || null,
+                        source: sourceList.length > 0
+                                ? sourceList.join(", ")
+                                : null,
+                        sourceURL:
+                            sourceURLList.length > 0
+                                ? sourceURLList.join(", ")
+                                : null,
                     };
 
                     if (elementData.element) {
@@ -73,6 +97,9 @@ const scrapeElements = async () => {
                         }
                     }
                 });
+            console.log(
+                `Values for ${PeriodicElement[atomicNumber]} (Z=${atomicNumber}) scraped and saved successfully.\n ----------------------------------------`
+            );
         }
     }
 };

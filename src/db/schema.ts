@@ -11,7 +11,7 @@ export const elementValues = pgTable("element_values", {
     id: serial("id").primaryKey(),
     reservoir: varchar("reservoir", { length: 255 }).notNull(),
     z: integer("z"),
-    element: varchar("element", { length: 10 }).notNull(),
+    element: varchar("element", { length: 255 }).notNull(),
     value: numeric("value"),
     median: numeric("median"),
     sd: numeric("sd"),
