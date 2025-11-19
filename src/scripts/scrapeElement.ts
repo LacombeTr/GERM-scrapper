@@ -1,24 +1,6 @@
 import "dotenv/config";
 import { scrapePage } from "../utils/scrapePage";
-import { log } from "console";
-
-type ElementValue = {
-    reservoir: string;
-    z: number | undefined;
-    element: string;
-    value: number | undefined;
-    median: number | undefined;
-    sd: number | undefined;
-    low: number | undefined;
-    high: number | undefined;
-    analysisNumber: number | undefined;
-    unit: string | undefined;
-    info: string | undefined;
-    reference: string | undefined;
-    referenceURL: string | undefined;
-    source: string | URL | undefined;
-    sourceURL: string | URL | undefined;
-};
+import { ElementValue } from "../types";
 
 const fetchedElementPage = async () => {
     const fetchedPage = await scrapePage(
@@ -47,32 +29,32 @@ const scrapeElements = async () => {
                 reservoir: cells[0]?.textContent?.trim() || "",
                 z: cells[1]?.textContent?.trim()
                     ? parseFloat(cells[1].textContent.trim())
-                    : undefined,
+                    : null,
                 element: cells[2]?.textContent?.trim() || "",
                 value: cells[3]?.textContent?.trim()
-                    ? parseFloat(cells[3].textContent.trim())
-                    : undefined,
+                    ? cells[3].textContent.trim()
+                    : null,
                 median: cells[4]?.textContent?.trim()
-                    ? parseFloat(cells[4].textContent.trim())
-                    : undefined,
+                    ? cells[4].textContent.trim()
+                    : null,
                 sd: cells[5]?.textContent?.trim()
-                    ? parseFloat(cells[5].textContent.trim())
-                    : undefined,
+                    ? cells[5].textContent.trim()
+                    : null,
                 low: cells[6]?.textContent?.trim()
-                    ? parseFloat(cells[6].textContent.trim())
-                    : undefined,
+                    ? cells[6].textContent.trim()
+                    : null,
                 high: cells[7]?.textContent?.trim()
-                    ? parseFloat(cells[7].textContent?.trim())
-                    : undefined,
+                    ? cells[7].textContent?.trim()
+                    : null,
                 analysisNumber: cells[8]?.textContent?.trim()
                     ? parseFloat(cells[8].textContent?.trim())
-                    : undefined,
-                unit: cells[9]?.textContent?.trim() || undefined,
-                info: cells[10]?.textContent?.trim() || undefined,
-                reference: cells[11]?.textContent?.trim() || undefined,
-                referenceURL: cells[11]?.querySelector("a")?.href || undefined,
-                source: cells[12]?.textContent?.trim() || undefined,
-                sourceURL: cells[12]?.querySelector("a")?.href || undefined,
+                    : null,
+                unit: cells[9]?.textContent?.trim() || null,
+                info: cells[10]?.textContent?.trim() || null,
+                reference: cells[11]?.textContent?.trim() || null,
+                referenceURL: cells[11]?.querySelector("a")?.href || null,
+                source: cells[12]?.textContent?.trim() || null,
+                sourceURL: cells[12]?.querySelector("a")?.href || null,
             };
         });
     }
