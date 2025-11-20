@@ -5,7 +5,7 @@
     "main": "dist/index.js",
     "scripts": {
         "test": "jest",
-        "start": "node src/index.js",
+        "start": "node dist/index.js",
         "dev": "docker compose up -d && nodemon src/index.ts",
         "build": "tsc",
         "serve": "node dist/index.js",
