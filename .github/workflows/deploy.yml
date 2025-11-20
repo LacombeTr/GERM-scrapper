@@ -1,0 +1,36 @@
+name: Deploy to VPS
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Executing remote ssh commands
+              uses: appleboy/ssh-action@master
+              with:
+                  host: ${{ secrets.VPS_HOST }}
+                  username: ${{ secrets.VPS_USER }}
+                  key: ${{ secrets.VPS_SSH_KEY }}
+                  script: |
+
+                      cd ~/GERM-scrapper
+
+                      # Récupération des derniers changements
+                      git pull origin main
+
+                      # Installation des dépendances (décommentez selon votre langage)
+                      npm install
+
+                      # Jouer la migration pour mettre a jour la db
+                      npx drizzle-kit push
+
+                      # Redémarrage du service (Shell basique)
+                      # Tuer l'ancien processus (ignorer l'erreur si aucun processus n'existe)
+                      pkill -f "node index.js" || true
+
+                      # Lancer le nouveau processus en arrière-plan
+                      npm run prod &
