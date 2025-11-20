@@ -4,6 +4,11 @@ import { ElementValue, PeriodicElement } from "../types";
 import { drizzle } from "drizzle-orm/node-postgres/driver";
 import { elementValues } from "../db/schema";
 
+/**
+ * Récupère et analyse la page web pour un élément chimique spécifique.
+ * @param elementnumber - Le numéro atomique de l'élément à scraper
+ * @returns Une promesse qui résout vers un Document DOM de la page récupérée
+ */
 const fetchedElementPage = async (elementnumber: number) => {
     const fetchedPage = await scrapePage(
         `${process.env.SCRAPING_BASE_URL}/e:${elementnumber}/`
@@ -12,9 +17,21 @@ const fetchedElementPage = async (elementnumber: number) => {
     return fetchedPage;
 };
 
+/** Instance de l'ORM Drizzle pour les opérations de base de données */
 const db = drizzle(process.env.DATABASE_URL!);
 
+/**
+ * Fonction principale qui scrape les données géochimiques pour tous les éléments chimiques.
+ * Parcourt les éléments du numéro atomique 1 à 92, extrait les données de chaque page
+ * et les sauvegarde dans la base de données.
+ *
+ * Pour chaque élément:
+ * - Récupère la page web correspondante
+ * - Parse les tableaux HTML pour extraire les valeurs géochimiques
+ * - Sauvegarde les données dans la table element_values
+ */
 const scrapeElements = async () => {
+    // Parcours de tous les éléments du tableau périodique (H à U)
     for (let atomicNumber = 1; atomicNumber <= 92; atomicNumber++) {
         console.log(
             `Scraping element with atomic number: ${PeriodicElement[atomicNumber]}(Z=(${atomicNumber})`
@@ -30,13 +47,17 @@ const scrapeElements = async () => {
         }
 
         if (fetchedPage) {
+            // Parse chaque ligne du tableau de données géochimiques
             fetchedPage
                 .querySelectorAll('tr[valign="top"]')
                 .forEach(async (row) => {
                     const cells = row.querySelectorAll("td");
+                    /** Liste des noms de sources de données */
                     const sourceList: string[] = [];
+                    /** Liste des URLs des sources de données */
                     const sourceURLList: string[] = [];
 
+                    // Extraction des sources et de leurs URLs depuis la cellule 12
                     cells[12]?.querySelectorAll("a")
                         ? cells[12]?.querySelectorAll("a").forEach((source) => {
                               sourceList.push(source.textContent || "");
@@ -49,6 +70,7 @@ const scrapeElements = async () => {
                           })
                         : null;
 
+                    /** Objet contenant toutes les données géochimiques extraites pour un élément */
                     const elementData: ElementValue = {
                         reservoir: cells[0]?.textContent?.trim() || "",
                         z: atomicNumber,
@@ -66,7 +88,7 @@ const scrapeElements = async () => {
                             ? cells[6].textContent.trim()
                             : null,
                         high: cells[7]?.textContent?.trim()
-                            ? cells[7].textContent?.trim()
+                            ? cells[7].textContent.trim()
                             : null,
                         analysisNumber: cells[8]?.textContent?.trim()
                             ? parseFloat(cells[8].textContent?.trim())
@@ -86,6 +108,7 @@ const scrapeElements = async () => {
                                 : null,
                     };
 
+                    // Insertion en base de données uniquement si l'élément est valide
                     if (elementData.element) {
                         try {
                             await db.insert(elementValues).values(elementData);
@@ -105,4 +128,5 @@ const scrapeElements = async () => {
     }
 };
 
+// Lancement du processus de scraping
 scrapeElements();
