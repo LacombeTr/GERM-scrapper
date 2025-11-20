@@ -64,4 +64,6 @@ app.get("/reservoir/symbol/:symbol", (req: Request, res: Response) => {
 /**
  * Démarre le serveur Express sur le port configuré
  */
-app.listen(PORT, () => {});
+app.listen(PORT, () => {
+    console.log(`🚀 Serveur démarré sur ${PORT}`);
+});
