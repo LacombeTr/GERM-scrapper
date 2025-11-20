@@ -76,7 +76,8 @@ const scrapeElements = async () => {
                         reference: cells[11]?.textContent?.trim() || null,
                         referenceURL:
                             cells[11]?.querySelector("a")?.href || null,
-                        source: sourceList.length > 0
+                        source:
+                            sourceList.length > 0
                                 ? sourceList.join(", ")
                                 : null,
                         sourceURL:
