@@ -19,7 +19,7 @@ jobs:
 
             - name: Deploy
               run: |
-                  cd /GERM-scrapper
+                  cd GERM-scrapper
                   git pull && npm install
                   npx drizzle-kit push
                   pkill -f 'node index.js' || true
