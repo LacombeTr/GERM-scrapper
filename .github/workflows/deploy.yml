@@ -20,6 +20,6 @@ jobs:
                   git pull
                   npm install
                   npx drizzle-kit push
-                  pkill -f 'node index.js' || true
-                  nohup npm run prod > app.log 2>&1 &
+                  pkill -f "npm run prod" || true
+                  nohup npm run prod > ~/GERM-scrapper/app.log 2>&1 < /dev/null &
                   EOF
