@@ -15,7 +15,6 @@ jobs:
                   host: ${{ secrets.VPS_HOST }}
                   username: ${{ secrets.VPS_USER }}
                   key: ${{ secrets.VPS_SSH_KEY }}
-                  passphrase: ${{ secrets.VPS_SSH_PASSPHRASE }}
                   script: |
 
                       cd ~/GERM-scrapper
@@ -33,5 +32,5 @@ jobs:
                       # Tuer l'ancien processus (ignorer l'erreur si aucun processus n'existe)
                       pkill -f "node index.js" || true
 
-                      # Lancer le nouveau processus en arrière-plan
-                      npm run prod &
+                      # Lancer le nouveau processus en arrière-plan avec nohup pour survivre à la déconnexion
+                      nohup npm run prod > app.log 2>&1 &
