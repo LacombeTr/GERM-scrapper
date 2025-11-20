@@ -27,7 +27,9 @@ app.use(express.json());
  * @returns {string} Message de bienvenue
  */
 app.get("/", (req: Request, res: Response) => {
-    res.send("Welcome to the unofficial GERM (Geochemical Earth Reference Model) by Tristan Lacombe.");
+    res.send(
+        "Welcome to the unofficial GERM (Geochemical Earth Reference Model) by Tristan Lacombe! Contact me @ [...]"
+    );
 });
 
 /**

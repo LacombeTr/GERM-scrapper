@@ -13,6 +13,14 @@ jobs:
             - name: Install sshpass
               run: sudo apt-get install -y sshpass
 
+            - name: Connect SSH
+              run: |
+                  sshpass -p "${{ secrets.VPS_PSW }}" ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+
             - name: Deploy
               run: |
-                  sshpass -p "${{ secrets.VPS_PSW }}" ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "cd ~/GERM-scrapper && git pull && npm install && npx drizzle-kit push && pkill -f 'node index.js' || true && nohup npm run prod > app.log 2>&1 &"
+                  cd ~/GERM-scrapper
+                  git pull && npm install
+                  npx drizzle-kit push
+                  pkill -f 'node index.js' || true
+                  nohup npm run prod > app.log 2>&1 &
