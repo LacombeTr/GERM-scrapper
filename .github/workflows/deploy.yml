@@ -15,9 +15,11 @@ jobs:
 
             - name: Connect SSH
               run: |
-                  sshpass -p "${{ secrets.VPS_PSW }}" ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
-                  cd GERM-scrapper
-                  git pull && npm install
+                  sshpass -p "${{ secrets.VPS_PSW }}" ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+                  cd ~/GERM-scrapper
+                  git pull
+                  npm install
                   npx drizzle-kit push
                   pkill -f 'node index.js' || true
                   nohup npm run prod > app.log 2>&1 &
+                  EOF
