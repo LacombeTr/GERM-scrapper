@@ -1,9 +1,7 @@
-import express, {Request, Response} from "express";
-import 'dotenv/config';
-import {setupSwagger} from "./config/swaggerConfig";
-import {drizzle} from 'drizzle-orm/node-postgres';
-import {VolcanoesHandler} from "./routes/volcano/getVolcanoes";
-import {GetEruptions} from "./routes/eruptions/getEruptions";
+import express, { Request, Response } from "express";
+import "dotenv/config";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { ElementHandler } from "./routes/reservoir/ElementHandler";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,16 +14,15 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Welcome to the VolcAPI");
 });
 
-app.get("/volcanoes", VolcanoesHandler.getAllVolcanoes);
-app.get("/volcanoes/getVolcanoList", VolcanoesHandler.getVolcanoList);
-app.get('/volcanoes/getVolcanoByID/:id', VolcanoesHandler.getVolcanoById)
-app.get('/volcanoes/getVolcanoByName/:name', VolcanoesHandler.getVolcanoByName)
-
-app.get("/volcanoes/eruptions", GetEruptions.getAllEruptions)
-app.get("/volcanoes/eruptions/getEruptionByVolcanoId/:id", GetEruptions.getEruptionsByVolcanoID)
-app.get("/volcanoes/eruption/getEruptionByVolcanoName/:name", GetEruptions.getEruptionsByVolcanoName)
-
-setupSwagger(app);
+app.get("/reservoir", ElementHandler.getAllElement);
+app.get("/reservoir/z/:z", (req: Request, res: Response) => {
+    req.query.z = req.params.z;
+    ElementHandler.getElement(req, res);
+});
+app.get("/reservoir/symbol/:symbol", (req: Request, res: Response) => {
+    req.query.symbol = req.params.symbol;
+    ElementHandler.getElement(req, res);
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
