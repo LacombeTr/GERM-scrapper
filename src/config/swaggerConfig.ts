@@ -9,7 +9,7 @@ const options = {
             title: "GERM api Documentation",
             version: "1.0.0",
             description:
-                "Documentation for the unofficial GERM (Geochemical Earth Reference Model) API by Tristan Lacombe.",
+                "Documentation for the unofficial GERM (Geochemical Earth Reference Model) API by Tristan Lacombe. \n Contact me at tlacombevulca@outlook.fr",
         },
         servers: [
             {
