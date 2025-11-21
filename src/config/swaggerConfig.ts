@@ -32,10 +32,6 @@ const swaggerSpec = swaggerJsDoc(options);
 export const setupSwagger = (app: Express) => {
     // Option 1 : Swagger disponible uniquement en développement
     if (process.env.NODE_ENV === "production") {
-        app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-        console.log("📚 Swagger disponible sur /api-docs");
+        app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     }
-
-    // Option 2 : Swagger disponible partout (décommenter si nécessaire)
-    // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 };

@@ -22,16 +22,16 @@ const db = drizzle(process.env.DATABASE_URL!);
 // Middleware pour parser le JSON dans les requêtes
 app.use(express.json());
 
-/**
- * Route racine - Message de bienvenue de l'API
- * @route GET /
- * @returns {string} Message de bienvenue
- */
-app.get("/", (req: Request, res: Response) => {
-    res.send(
-        "Welcome to the unofficial GERM (Geochemical Earth Reference Model) by Tristan Lacombe! Contact me blendien20@gmail.com"
-    );
-});
+// /**
+//  * Route racine - Message de bienvenue de l'API
+//  * @route GET /
+//  * @returns {string} Message de bienvenue
+//  */
+// app.get("/", (req: Request, res: Response) => {
+//     res.send(
+//         "Welcome to the unofficial GERM (Geochemical Earth Reference Model) by Tristan Lacombe! Contact me blendien20@gmail.com"
+//     );
+// });
 
 /**
  * Route pour récupérer tous les éléments géochimiques
