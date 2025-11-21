@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import "dotenv/config";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { ElementHandler } from "./routes/reservoir/ElementHandler";
+import { setupSwagger } from "./config/swaggerConfig";
 
 /**
  * Serveur Express principal pour l'API GERM (Geochemical Earth Reference Model).
@@ -62,6 +63,8 @@ app.get("/reservoir/symbol/:symbol", (req: Request, res: Response) => {
     req.query.symbol = req.params.symbol;
     ElementHandler.getElement(req, res);
 });
+
+setupSwagger(app);
 
 /**
  * Démarre le serveur Express sur le port configuré
