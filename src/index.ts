@@ -22,30 +22,75 @@ const db = drizzle(process.env.DATABASE_URL!);
 // Middleware pour parser le JSON dans les requêtes
 app.use(express.json());
 
-// /**
-//  * Route racine - Message de bienvenue de l'API
-//  * @route GET /
-//  * @returns {string} Message de bienvenue
-//  */
-// app.get("/", (req: Request, res: Response) => {
-//     res.send(
-//         "Welcome to the unofficial GERM (Geochemical Earth Reference Model) by Tristan Lacombe! Contact me blendien20@gmail.com"
-//     );
-// });
-
 /**
- * Route pour récupérer tous les éléments géochimiques
- * @route GET /reservoir
- * @returns {ElementValueSelect[]} Liste complète des valeurs d'éléments géochimiques
+ * @swagger
+ * /reservoir/:
+ *   get:
+ *     summary: Get all values
+ *     description: Retrieve geochemical values for all elements in the database
+ *     tags: [Elements]
+ *     responses:
+ *       200:
+ *         description: Element values found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ElementValue'
+ *       404:
+ *         description: Element not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 app.get("/reservoir", ElementHandler.getAllElement);
 
 /**
- * Route pour récupérer un élément par son numéro atomique
- * @route GET /reservoir/z/:z
- * @param {number} z - Numéro atomique de l'élément (1-92)
- * @returns {ElementValueSelect[]} Valeurs géochimiques pour l'élément spécifié
- * @example GET /reservoir/z/6 // Récupère les données du carbone
+ * @swagger
+ * /reservoir/z/{z}:
+ *   get:
+ *     summary: Get element by atomic number
+ *     description: Retrieve geochemical values for an element using its atomic number (1-92)
+ *     tags: [Elements]
+ *     parameters:
+ *       - in: path
+ *         name: z
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 92
+ *         description: Atomic number of the element
+ *         example: 6
+ *     responses:
+ *       200:
+ *         description: Element values found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ElementValue'
+ *       404:
+ *         description: Element not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 app.get("/reservoir/z/:z", (req: Request, res: Response) => {
     req.query.z = req.params.z;
@@ -53,11 +98,41 @@ app.get("/reservoir/z/:z", (req: Request, res: Response) => {
 });
 
 /**
- * Route pour récupérer un élément par son symbole chimique
- * @route GET /reservoir/symbol/:symbol
- * @param {string} symbol - Symbole chimique de l'élément (ex: "Fe", "Si", "Al")
- * @returns {ElementValueSelect[]} Valeurs géochimiques pour l'élément spécifié
- * @example GET /reservoir/symbol/Fe // Récupère les données du fer
+ * @swagger
+ * /reservoir/symbol/{symbol}:
+ *   get:
+ *     summary: Get element by element symbol
+ *     description: Retrieve geochemical values for an element using its atomic number (1-92)
+ *     tags: [Elements]
+ *     parameters:
+ *       - in: path
+ *         name: symbol
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Element symbol
+ *         example: C
+ *     responses:
+ *       200:
+ *         description: Element values found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ElementValue'
+ *       404:
+ *         description: Element not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 app.get("/reservoir/symbol/:symbol", (req: Request, res: Response) => {
     req.query.symbol = req.params.symbol;
